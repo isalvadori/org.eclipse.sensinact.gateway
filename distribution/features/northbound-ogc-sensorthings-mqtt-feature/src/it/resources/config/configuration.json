@@ -11,7 +11,7 @@
     "repository": "target/it/repository",
     "featureDir": "target/it/features"
   },
-  "sensiNact.northbound.sensorthings.mqtt": {
+  "sensinact.northbound.sensorthings.mqtt": {
     "host": "127.0.0.1",
     "port": 18883,
     "websocket.enable": false

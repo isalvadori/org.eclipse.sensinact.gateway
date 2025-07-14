@@ -72,7 +72,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-@WithFactoryConfiguration(factoryPid = "sensiNact.northbound.sensorthings.mqtt", properties = {
+@WithFactoryConfiguration(factoryPid = "sensinact.northbound.sensorthings.mqtt", properties = {
         @Property(key = "port", value = "13579"), @Property(key = "websocket.enable", value = "false") })
 public class InsecureMqttNotificationsTest {
 

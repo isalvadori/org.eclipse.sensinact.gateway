@@ -55,7 +55,7 @@ import jakarta.ws.rs.core.Application;
 /**
  * Common setup for the tests
  */
-@WithConfiguration(pid = "sensinact.sensorthings.northbound.rest", properties = {
+@WithConfiguration(pid = "sensinact.northbound.sensorthings.rest", properties = {
         @Property(key = "test.class", source = ValueSource.TestClass),
         @Property(key = "sessionManager.target", value = "(test.class=%s)", templateArguments = @TemplateArgument(source = ValueSource.TestClass))
 })

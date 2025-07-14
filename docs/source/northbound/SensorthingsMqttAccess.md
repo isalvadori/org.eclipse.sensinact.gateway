@@ -27,12 +27,12 @@ The MQTT interface will run without any configuration, however the `jakarta-rest
       "northbound-ogc-sensorthings-mqtt-feature"
     ]
   },
-  "sensiNact.northbound.sensorthings.mqtt": {}
+  "sensinact.northbound.sensorthings.mqtt": {}
 }
 ```
 ## Advanced configuration
 
- The MQTT broker can be configured using the pid `sensiNact.northbound.sensorthings.mqtt` and the following properties
+ The MQTT broker can be configured using the pid `sensinact.northbound.sensorthings.mqtt` and the following properties
 
  * `host` - the host interface to listen on - defaults to `"0.0.0.0"`;
  * `port` - the insecure port - defaults to `1883`, set to `-1` to disable

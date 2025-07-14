@@ -26,7 +26,7 @@ import org.osgi.service.jakartars.whiteboard.propertytypes.JakartarsName;
 
 import jakarta.ws.rs.core.Application;
 
-@Component(service = Application.class, configurationPid = "sensinact.sensorthings.northbound.rest")
+@Component(service = Application.class, configurationPid = "sensinact.northbound.sensorthings.rest")
 @JakartarsName("sensorthings")
 @JakartarsApplicationBase("/")
 public class SensinactSensorthingsApplication extends Application {

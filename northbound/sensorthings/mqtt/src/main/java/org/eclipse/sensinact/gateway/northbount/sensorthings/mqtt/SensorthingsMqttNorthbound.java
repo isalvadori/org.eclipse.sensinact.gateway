@@ -64,7 +64,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.MqttMessageBuilders;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 
-@Component(service = TypedEventHandler.class, configurationPid = "sensiNact.northbound.sensorthings.mqtt", configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(service = TypedEventHandler.class, configurationPid = "sensinact.northbound.sensorthings.mqtt", configurationPolicy = ConfigurationPolicy.REQUIRE)
 @EventTopics({ "DATA/*", "LIFECYCLE/*", "METADATA/*" })
 public class SensorthingsMqttNorthbound extends AbstractInterceptHandler
         implements TypedEventHandler<ResourceNotification> {

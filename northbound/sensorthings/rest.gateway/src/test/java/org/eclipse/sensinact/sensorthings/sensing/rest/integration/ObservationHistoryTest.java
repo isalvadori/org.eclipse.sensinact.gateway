@@ -87,7 +87,7 @@ public class ObservationHistoryTest extends AbstractIntegrationTest {
     @BeforeEach
     void setupTest(
             @InjectConfiguration(withConfig = @WithConfiguration(pid = "sensinact.history.timescale", location = "?")) Configuration historyConfig,
-            @InjectConfiguration(withConfig = @WithConfiguration(pid = "sensinact.sensorthings.northbound.rest", location = "?")) Configuration sensorthingsConfig)
+            @InjectConfiguration(withConfig = @WithConfiguration(pid = "sensinact.northbound.sensorthings.rest", location = "?")) Configuration sensorthingsConfig)
             throws Exception {
 
         assertNotNull(container);
