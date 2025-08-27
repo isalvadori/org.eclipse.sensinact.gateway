@@ -17,9 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.sensinact.core.snapshot.ProviderSnapshot;
 import org.eclipse.sensinact.core.snapshot.ResourceSnapshot;
 import org.eclipse.sensinact.core.twin.TimedValue;
 import org.eclipse.sensinact.northbound.session.SensiNactSession;
+import org.eclipse.sensinact.sensorthings.sensing.dto.HistoricalLocation;
 import org.eclipse.sensinact.sensorthings.sensing.dto.Observation;
 import org.eclipse.sensinact.sensorthings.sensing.dto.ResultList;
 import org.eclipse.sensinact.sensorthings.sensing.rest.ExpansionSettings;
@@ -81,6 +83,50 @@ class HistoryResourceHelper {
         return list;
     }
 
+    @SuppressWarnings("unchecked")
+    static ResultList<HistoricalLocation> loadHistoricalLocations(SensiNactSession userSession,
+            Application application, ObjectMapper mapper, UriInfo uriInfo, ExpansionSettings expansions,
+            ProviderSnapshot provider, int localResultLimit) {
+        ResultList<HistoricalLocation> list = new ResultList<>();
+        list.value = new ArrayList<>();
+        String historyProvider = (String) application.getProperties().get("sensinact.history.provider");
+
+        if (historyProvider != null) {
+            Integer maxResults = (Integer) application.getProperties().get("sensinact.history.result.limit");
+
+            if (localResultLimit > 0) {
+                maxResults = Math.min(localResultLimit, maxResults);
+            }
+
+            Map<String, Object> params = initParameter(provider);
+            // Get count for the full dataset (for pagination metadata)
+            Long count = (Long) userSession.actOnResource(historyProvider, "history", "count", params);
+            list.count = count == null ? null : count > Integer.MAX_VALUE ? Integer.MAX_VALUE : count.intValue();
+
+            int skip = extractSkipParameter(uriInfo, params);
+            int top = extractTopParameter(uriInfo, params, maxResults);
+            extractOrderByParameter(uriInfo, params);
+
+            List<TimedValue<?>> timed;
+            do {
+                params.put("skip", skip);
+
+                timed = (List<TimedValue<?>>) userSession.actOnResource(historyProvider, "history", "rangeFiltered",
+                        params);
+                list.value.addAll(0, DtoMapper.toHistoricalLocationList(userSession, application, mapper, uriInfo, expansions,
+                		provider, timed));
+                if (timed.isEmpty()) {
+                    break;
+                } else if (timed.size() == 500) {
+                    skip = skip + list.value.size();
+                }
+
+            } while (list.value.size() < count && list.value.size() < top);
+        }
+        return list;
+    }
+
+    
     private static void extractOrderByParameter(UriInfo uriInfo, Map<String, Object> params) {
         List<String> orderbyParam = uriInfo.getQueryParameters().get("$orderby");
         if (orderbyParam != null && !orderbyParam.isEmpty()) {
@@ -120,6 +166,15 @@ class HistoryResourceHelper {
         params.put("provider", provider);
         params.put("service", service);
         params.put("resource", resource);
+        return params;
+    }
+    
+    private static Map<String, Object> initParameter(ProviderSnapshot providerSnapshot) {
+        String provider = providerSnapshot.getName();
+        Map<String, Object> params = new HashMap<>();
+        params.put("provider", provider);
+        params.put("service", "admin");
+        params.put("resource", "location");
         return params;
     }
 }

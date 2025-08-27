@@ -236,17 +236,11 @@ public class ThingsAccessImpl extends AbstractAccess implements ThingsAccess {
     @Override
     public ResultList<HistoricalLocation> getThingLocationHistoricalLocations(String id, String id2) {
         String provider = extractFirstIdSegment(id2);
-
-        HistoricalLocation hl;
         try {
-            hl = DtoMapper.toHistoricalLocation(getSession(), application, getMapper(), uriInfo,
-                    getExpansions(), validateAndGetProvider(provider));
+        	return HistoryResourceHelper.loadHistoricalLocations(getSession(), application, getMapper(), uriInfo, getExpansions(), validateAndGetProvider(provider), 0);
         } catch (IllegalArgumentException iae) {
             throw new NotFoundException();
         }
-
-        ResultList<HistoricalLocation> list = new ResultList<>();
-        list.value = List.of(hl);
-        return list;
+        
     }
 }
