@@ -265,6 +265,22 @@ public class HistoricalLocationTest extends AbstractIntegrationTest {
         });
         assertEquals(o.count, 10);
     }
+    
+    @Test
+    void getDataStreamHistoricalLocationsTest() throws Exception {
+        for (int i = 0; i < 10; i++) {
+            createResource("fizz", "admin", "location", GeoJsonUtils.point(i, i), TS_2012.plus(ofDays(i)));
+            createResource("fizz", "buzz", "fizzbuzz", "test"+i, TS_2012.plus(ofDays(i)));
+        }
+        // 10 updates
+        waitForRowCount("sensinact.geo_data", 10);
+        
+        String id = String.format("%s~%s~%s", "fizz", "buzz", "fizzbuzz");
+
+        ResultList<HistoricalLocation> o = utils.queryJson("/Datastreams("+id+")/Thing/HistoricalLocations?$count=true", new TypeReference<ResultList<HistoricalLocation>>() {
+        });
+        assertEquals(o.count, 10);
+    }
 
     
 }
