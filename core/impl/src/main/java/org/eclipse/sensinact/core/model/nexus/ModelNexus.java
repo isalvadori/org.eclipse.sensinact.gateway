@@ -973,7 +973,11 @@ public class ModelNexus {
     public Map<String, EClass> getDefinedServiceForProvider(Provider provider) {
         Map<String, EClass> result = new LinkedHashMap<>();
         getServiceReferencesForModel(provider.eClass()).forEach((feature) -> {
-            result.put(feature.getName(), feature.getEReferenceType());
+            // The stored instance may be a sub type of the declared service type. It is the
+            // instance that decides which resources a service has, exactly as the services map
+            // of a DynamicProvider does below, and as Provider.getServiceEClass(String) does.
+            Service instance = provider.eIsSet(feature) ? (Service) provider.eGet(feature) : null;
+            result.put(feature.getName(), instance == null ? feature.getEReferenceType() : instance.eClass());
         });
 
         if (provider instanceof DynamicProvider) {
@@ -985,8 +989,9 @@ public class ModelNexus {
     public Map<String, Entry<EClass, Service>> getServiceInstancesForProvider(Provider provider) {
         Map<String, Entry<EClass, Service>> result = new LinkedHashMap<>();
         getServiceReferencesForModel(provider.eClass()).forEach((feature) -> {
-            result.put(feature.getName(), new AbstractMap.SimpleImmutableEntry<>((EClass) feature.getEType(),
-                    provider.eIsSet(feature) ? (Service) provider.eGet(feature) : null));
+            Service instance = provider.eIsSet(feature) ? (Service) provider.eGet(feature) : null;
+            result.put(feature.getName(), new AbstractMap.SimpleImmutableEntry<>(
+                    instance == null ? (EClass) feature.getEType() : instance.eClass(), instance));
         });
 
         if (provider instanceof DynamicProvider) {
